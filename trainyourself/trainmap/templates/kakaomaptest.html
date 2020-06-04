@@ -47,6 +47,7 @@
 				map: map, 
 				position: locPosition
 			}); 
+			marker.setDraggable(true); 
 			
 			var iwContent = message, // 인포윈도우에 표시할 내용
 				iwRemoveable = true;
@@ -66,7 +67,8 @@
 		var mapContainer = document.getElementById('map'), // 지도를 표시할 div 
 			mapOption = { 
 				center: new kakao.maps.LatLng(33.450705, 126.570677), // 지도의 중심좌표
-				level: 4 // 지도의 확대 레벨
+				draggable: false, // 지도 이동 제한
+				level: 2 // 지도의 확대 레벨
 			};
 
 		var map = new kakao.maps.Map(mapContainer, mapOption); // 지도를 생성합니다
