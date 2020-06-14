@@ -1,3 +1,5 @@
 train_env/
 기타자료/
 production.json
+.DS_Store
+*.pyc
