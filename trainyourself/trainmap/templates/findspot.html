@@ -192,8 +192,9 @@
         console.log("current marker pos", marker_lat, marker_lon)
         // call api
 
-        let location = `${marker_lat}, ${marker_lon}`
-        // let location = 'loc'
+        // let location = `${marker_lat}, ${marker_lon}`
+        let lat = `${marker_lat}`
+        let lon = `${marker_lon}`
         // let pullUp = $('#pullUp').val();
         let pullUp = $('input:checkbox[id="pullUp"]').is(":checked")
         // let parallel = $('#parallel').val();
@@ -210,7 +211,7 @@
         $.ajax({
             type: "POST",
             url: "http://34.64.213.249:5000/spots/new",
-            data: { location_give: location, pullUp_give: pullUp, parallel_give: parallel, etc_give: etc },
+            data: { lat_give: lat, lon_give: lon, pullUp_give: pullUp, parallel_give: parallel, etc_give: etc },
             // xhrFields: {
             //     withCredentials: true
             // },
