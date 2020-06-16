@@ -17,6 +17,7 @@
     <br>
     <input type="button" value="등록" onclick="newSpot()">
 </div>
+<div id="spots_list"></div>
 <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey={{ appkey }}"></script>
 <!-- services와 clusterer, drawing 라이브러리 불러오기 -->
 <script type="text/javascript"
@@ -221,6 +222,27 @@
                 if (response['result'] == 'success') {
                     alert(response['msg']);
                     window.location.reload();
+                }
+            }
+        })
+    }
+    $(document).ready(function () {
+        $('#spots_list').html('')
+        listing()
+    })
+
+    function listing() {
+        $.ajax({
+            tytpe: "GET",
+            url: "http://34.64.213.249:5000/spots",
+            data: {},
+            success: function (response) {
+                if (response['result'] == 'success') {
+                    let spots = response['spots']
+                    for (let i = 0; i < spots.length; i++) {
+                        var tmp = `${spots[i]['lat']} ${spots[i]['lon']}<br>`
+                        $('#spots_list').prepend(tmp)
+                    }
                 }
             }
         })
