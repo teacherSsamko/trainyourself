@@ -44,7 +44,9 @@ def newSpotAPI():
 @app.route('/spots', methods=['GET'])
 @cross_origin(origin='*', headers=['Content-Type', 'Authorization'])
 def findSpotAPI():
-    pass
+    spots = list(db.trainyourself.find({}, {'_id': 0}))
+
+    return jsonify({'result': 'success', 'spots': spots})
 
 
 if __name__ == '__main__':
