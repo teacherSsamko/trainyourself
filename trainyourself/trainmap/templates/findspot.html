@@ -241,9 +241,16 @@
                 if (response['result'] == 'success') {
                     let spots = response['spots']
                     for (let i = 0; i < spots.length; i++) {
-                        var tmp = `${spots[i]['lat']} ${spots[i]['lon']}<br>`
+                        var tmp = `${spots[i]['lat']} ${spots[i]['lon']}`
+                        var title = ''
+                        if (spots[i]['pullUp'] == 'true') {
+                            title += '철봉 '
+                        }
+                        if (spots[i]['parallel'] == 'true') {
+                            title += '평행봉'
+                        }
+                        tmp += title + '<br>'
                         $('#spots_list').prepend(tmp)
-                        let title = `${spots[i]['pullUp']} ${spots[i]['parallel']}`
                         positions.push({
                             title: `${title}`,
                             latlng: new kakao.maps.LatLng(spots[i]['lat'], spots[i]['lon'])
@@ -274,6 +281,18 @@
                 title: positions[i].title, // 마커의 타이틀, 마커에 마우스를 올리면 타이틀이 표시됩니다
                 image: markerImage // 마커 이미지 
             });
+
+            var iwContent = positions[i].title, // 인포윈도우에 표시할 내용
+                iwRemoveable = true;
+
+            // 인포윈도우를 생성합니다
+            var infowindow = new kakao.maps.InfoWindow({
+                content: iwContent,
+                removable: iwRemoveable
+            });
+
+            // 인포윈도우를 마커위에 표시합니다 
+            infowindow.open(map, marker);
         }
 
         // 마커가 지도 위에 표시되도록 설정합니다
