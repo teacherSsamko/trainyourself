@@ -3,3 +3,4 @@ train_env/
 production.json
 .DS_Store
 *.pyc
+production.py

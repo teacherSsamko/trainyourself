@@ -2,10 +2,10 @@ import os
 import json
 from django.core.exceptions import ImproperlyConfigured
 
-BASE_DIR = os.path.dirname(os.path.dirname(
-    os.path.dirname(os.path.abspath(__file__))))
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+BASE_DIR = os.path.dirname(os.path.dirname(BASE_DIR))
+print(BASE_DIR)
 
-# Secret File Control
 secret_file = os.path.join(BASE_DIR, 'production.json')
 
 with open(secret_file) as f:
@@ -20,8 +20,7 @@ def get_secret(setting, secrets=secrets):
         raise ImproperlyConfigured(erro_msg)
 
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
+DEBUG = True
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = get_secret("SECRET_KEY")
@@ -133,3 +132,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
 STATIC_URL = '/static/'
+
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, "static"), # Root의 static 파일
+    '/trainmap/static/',	# garden App의 static 파일
+)
+
