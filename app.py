@@ -31,7 +31,10 @@ def newSpotAPI():
         'lon': lon_receive,
         'pullUp': pullUp_receive,
         'parallel': parallel_receive,
-        'etc': etc_receive
+        'etc': etc_receive,
+        'valid_count': 1,
+        'delete_count': 0,
+        'status': 'pending'
     }
 
     print(spot)
