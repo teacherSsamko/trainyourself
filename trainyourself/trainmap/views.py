@@ -24,8 +24,16 @@ def get_secret(setting, secrets=secrets):
 
 
 
-class MapTest(TemplateView):
+class FindSpot(TemplateView):
     template_name = 'findspot.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['appkey'] = get_secret("KAKAOMAPKEY")
+        return context
+
+class NewSpot(TemplateView):
+    template_name = 'new_spot.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

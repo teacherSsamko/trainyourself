@@ -108,8 +108,6 @@ CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_CREDENTIALS = True
 
 
-
-
 # Password validation
 # https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators
 
@@ -149,6 +147,8 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, "static"), # Root의 static 파일
+    os.path.join(BASE_DIR, "static"),  # Root의 static 파일
 
 )
+
+STATIC_ROOT = 'ssamko/trainyourself/trainyourself/static'
