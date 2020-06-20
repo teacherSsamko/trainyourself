@@ -2,6 +2,7 @@
 {% block title %}
 위치찾기 | {{ block.super }}
 {% endblock title %}
+{% block nav-find %}active{% endblock nav-find %}
 {% block header %}
 
 {% endblock header %}
@@ -19,47 +20,45 @@
     var uni_marker;
     // 현재 위치 가져오기
     // HTML5의 geolocation으로 사용할 수 있는지 확인합니다 
-    if (navigator.geolocation) {
-        console.log('geolocation works')
-        // GeoLocation을 이용해서 접속 위치를 얻어옵니다
-        navigator.geolocation.getCurrentPosition(function (position) {
+    // if (navigator.geolocation) {
+    //     console.log('geolocation works')
+    //     // GeoLocation을 이용해서 접속 위치를 얻어옵니다
+    //     navigator.geolocation.getCurrentPosition(function (position) {
 
-            var lat = position.coords.latitude, // 위도
-                lon = position.coords.longitude; // 경도
+    //         var lat = position.coords.latitude, // 위도
+    //             lon = position.coords.longitude; // 경도
 
-            var locPosition = new kakao.maps.LatLng(lat, lon)// 마커가 표시될 위치를 geolocation으로 얻어온 좌표로 생성합니다 
+    //         var locPosition = new kakao.maps.LatLng(lat, lon)// 마커가 표시될 위치를 geolocation으로 얻어온 좌표로 생성합니다 
 
-            // 마커와 인포윈도우를 표시합니다
-            // displayMarker(locPosition, message);
-            console.log("현재위치", lat, lon)
+    //         // 마커와 인포윈도우를 표시합니다
+    //         // displayMarker(locPosition, message);
+    //         console.log("현재위치", lat, lon)
 
-            // 지도 표시하기
-            // var mapContainer = document.getElementById('map'), // 지도를 표시할 div 
-            //     mapOption = {
-            //         center: new kakao.maps.LatLng(lat, lon), // 지도의 중심좌표
-            //         draggable: true, // 지도 이동 제한 여부
-            //         level: 2 // 지도의 확대 레벨
-            //     };
-            // var map = new kakao.maps.Map(mapContainer, mapOption);
-
-
+    //         // 지도 표시하기
+    //         // var mapContainer = document.getElementById('map'), // 지도를 표시할 div 
+    //         //     mapOption = {
+    //         //         center: new kakao.maps.LatLng(lat, lon), // 지도의 중심좌표
+    //         //         draggable: true, // 지도 이동 제한 여부
+    //         //         level: 2 // 지도의 확대 레벨
+    //         //     };
+    //         // var map = new kakao.maps.Map(mapContainer, mapOption);
 
 
-        });
+    //     });
 
-    } else { // HTML5의 GeoLocation을 사용할 수 없을때 마커 표시 위치와 인포윈도우 내용을 설정합니다
-        console.log('geolocation unavailable')
+    // } else { // HTML5의 GeoLocation을 사용할 수 없을때 마커 표시 위치와 인포윈도우 내용을 설정합니다
+    //     console.log('geolocation unavailable')
 
-        var locPosition = new kakao.maps.LatLng(33.450701, 126.570667)
+    //     var locPosition = new kakao.maps.LatLng(33.450701, 126.570667)
 
 
-    }
-    console.log('after geolocation')
+    // }
+    // console.log('after geolocation')
 
 
     var mapContainer = document.getElementById('map'), // 지도를 표시할 div 
         mapOption = {
-            center: new kakao.maps.LatLng(35.450705, 126.570677), // 지도의 중심좌표
+            center: new kakao.maps.LatLng(33.450705, 126.570677), // 지도의 중심좌표
             draggable: true, // 지도 이동 제한
             level: 2 // 지도의 확대 레벨
         };
