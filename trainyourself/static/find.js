@@ -33,6 +33,7 @@ function listing() {
 
 function marker_display() {
     // marker set을 표시하는 코드
+    var markers = []
 
     for (var i = 0; i < positions.length; i++) {
 
@@ -47,8 +48,12 @@ function marker_display() {
             map: map, // 마커를 표시할 지도
             position: positions[i].latlng, // 마커를 표시할 위치
             title: positions[i].title, // 마커의 타이틀, 마커에 마우스를 올리면 타이틀이 표시됩니다
-            image: markerImage // 마커 이미지 
+            image: markerImage, // 마커 이미지 
+            clickable: true
         });
+
+
+        console.log('a marker added on markers')
 
         var iwContent = positions[i].title, // 인포윈도우에 표시할 내용
             iwRemoveable = true;
@@ -59,10 +64,24 @@ function marker_display() {
             removable: iwRemoveable
         });
 
-        // 인포윈도우를 마커위에 표시합니다 
-        infowindow.open(map, marker);
+
+
+        // 마커에 클릭이벤트를 등록합니다
+        kakao.maps.event.addListener(marker, 'click', makeOverListener(map, marker, infowindow));
+        markers.push(marker)
     }
 
     // 마커가 지도 위에 표시되도록 설정합니다
-    marker.setMap(map);
+    for (var i = 0; i < markers.length; i++) {
+        markers[i].setMap(map);
+    }
+    console.log('markers set up complete')
+
+}
+
+// 인포윈도우를 표시하는 클로저를 만드는 함수입니다 
+function makeOverListener(map, marker, infowindow) {
+    return function () {
+        infowindow.open(map, marker);
+    };
 }
