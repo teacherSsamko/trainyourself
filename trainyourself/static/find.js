@@ -17,12 +17,17 @@ function listing() {
                     if (spots[i]['parallel'] == 'true') {
                         title += '평행봉'
                     }
+                    var etc = spots[i]['etc']
+                    title += '<br>' + etc;
                     tmp += title + '<br>'
                     $('#spots_list').prepend(tmp)
+
                     positions.push({
                         title: `${title}`,
-                        latlng: new kakao.maps.LatLng(spots[i]['lat'], spots[i]['lon'])
+                        latlng: new kakao.maps.LatLng(spots[i]['lat'], spots[i]['lon']),
+                        status: spots[i]['status']
                     })
+                    console.log(spots[i]['status'])
                 }
                 marker_display()
 
@@ -52,10 +57,16 @@ function marker_display() {
             clickable: true
         });
 
+        var msg = `<div class='iw'>${positions[i].title}`
+        // 확인버튼
+        msg += '<br><button type="button" class="btn btn-success">확인</button>'
+        // 거짓버튼
+        msg += ' <button type="button" class="btn btn-danger">거짓</button>'
+        msg += '</div>'
 
         console.log('a marker added on markers')
 
-        var iwContent = positions[i].title, // 인포윈도우에 표시할 내용
+        var iwContent = msg, // 인포윈도우에 표시할 내용
             iwRemoveable = true;
 
         // 인포윈도우를 생성합니다
