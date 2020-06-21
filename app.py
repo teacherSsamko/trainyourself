@@ -7,7 +7,8 @@ app = Flask(__name__)
 CORS(app)
 app.config['CORS_HEADERS'] = 'Content-Type'
 # client = MongoClient('localhost', 27017)  # mongoDB는 27017 포트로 돌아갑니다.
-client = MongoClient('mongodb://ssamko:dmstjq@34.64.213.249', 27017)
+client = MongoClient('mongodb://ssamko:dmstjq@34.64.213.249', 27017,
+                     connect=False)
 db = client.DBdev
 # db = client.spots
 
@@ -52,10 +53,11 @@ def findSpotAPI():
     return jsonify({'result': 'success', 'spots': spots})
 
 
-if __name__ == '__main__':
-    app.run('0.0.0.0', port=5000, debug=True)
-
-
 @app.errorhandler(404)
 def page_not_found(error):
     return 'This route does not exist {}'.format(request.url), 404
+
+
+if __name__ == '__main__':
+    # app.run('0.0.0.0', port=5000, debug=True)
+    app.run()
