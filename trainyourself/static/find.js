@@ -3,7 +3,7 @@ function listing() {
 
     $.ajax({
         tytpe: "GET",
-        url: "https://34.64.213.249:5000/spots",
+        url: "https://trainyourself.co.kr/api/spots",
         data: {},
         success: function (response) {
             if (response['result'] == 'success') {

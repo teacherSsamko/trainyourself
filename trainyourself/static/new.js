@@ -134,7 +134,7 @@ function newSpot() {
     // 3. POST /spots/new 에 저장을 요청합니다.
     $.ajax({
         type: "POST",
-        url: "https://34.64.213.249:5000/spots/new",
+        url: "https://trainyourself.co.kr/api/spots/new",
         data: { lat_give: lat, lon_give: lon, pullUp_give: pullUp, parallel_give: parallel, etc_give: etc },
         // xhrFields: {
         //     withCredentials: true
@@ -158,7 +158,7 @@ function listing() {
     console.log('listing start')
     $.ajax({
         tytpe: "GET",
-        url: "https://34.64.213.249:5000/spots",
+        url: "https://trainyourself.co.kr/api/spots",
         data: {},
         success: function (response) {
             if (response['result'] == 'success') {
