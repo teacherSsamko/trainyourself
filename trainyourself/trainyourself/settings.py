@@ -41,7 +41,7 @@ SECRET_KEY = get_secret("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = get_secret("DEBUG_VALUE")
 
-ALLOWED_HOSTS = [get_secret("ALLOWED_HOSTS_VALUE")]
+ALLOWED_HOSTS = get_secret("ALLOWED_HOSTS_VALUE")
 
 
 # Application definition
