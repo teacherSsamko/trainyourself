@@ -16,14 +16,14 @@ if (navigator.geolocation) {
         // 마커와 인포윈도우를 표시합니다
         // displayMarker(locPosition, message);
         console.log("현재위치", lat, lon)
-        
+
         console.log("map will setup")
         var mapContainer = document.getElementById('map'), // 지도를 표시할 div 
-        mapOption = {
-            center: locPosition, // 지도의 중심좌표
-            draggable: false, // 지도 이동 제한
-            level: 1 // 지도의 확대 레벨
-        };
+            mapOption = {
+                center: locPosition, // 지도의 중심좌표
+                draggable: false, // 지도 이동 제한
+                level: 1 // 지도의 확대 레벨
+            };
 
         map = new kakao.maps.Map(mapContainer, mapOption);
         console.log("marker will setup")
@@ -36,7 +36,7 @@ if (navigator.geolocation) {
 
     var locPosition = new kakao.maps.LatLng(33.450701, 126.570667),
         message = 'geolocation을 사용할수 없어요..'
-    
+
     console.log("map will setup")
     var mapContainer = document.getElementById('map'), // 지도를 표시할 div 
         mapOption = {
@@ -108,7 +108,7 @@ var positions = [];
 // 마커 이미지의 이미지 주소입니다
 var imageSrc = "https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/markerStar.png";
 
-    
+
 
 function newSpot() {
     let marker_lat = uni_marker.getPosition().getLat(),
@@ -134,7 +134,7 @@ function newSpot() {
     // 3. POST /spots/new 에 저장을 요청합니다.
     $.ajax({
         type: "POST",
-        url: "http://34.64.213.249:5000/spots/new",
+        url: "https://34.64.213.249:5000/spots/new",
         data: { lat_give: lat, lon_give: lon, pullUp_give: pullUp, parallel_give: parallel, etc_give: etc },
         // xhrFields: {
         //     withCredentials: true
@@ -158,7 +158,7 @@ function listing() {
     console.log('listing start')
     $.ajax({
         tytpe: "GET",
-        url: "http://34.64.213.249:5000/spots",
+        url: "https://34.64.213.249:5000/spots",
         data: {},
         success: function (response) {
             if (response['result'] == 'success') {

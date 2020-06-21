@@ -3,7 +3,7 @@ function listing() {
 
     $.ajax({
         tytpe: "GET",
-        url: "http://34.64.213.249:5000/spots",
+        url: "https://34.64.213.249:5000/spots",
         data: {},
         success: function (response) {
             if (response['result'] == 'success') {
