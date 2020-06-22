@@ -1,21 +1,49 @@
 var uni_marker;
 var map;
+var currentPosition;
 // 현재 위치 가져오기
 // HTML5의 geolocation으로 사용할 수 있는지 확인합니다 
-if (navigator.geolocation) {
+$('#spots_list').html('')
+    // listing()
+console.log('listing finished')
+$(document).ready(function() {
+    if (navigator.geolocation) {
+        console.log('geolocation work')
+            // GeoLocation을 이용해서 접속 위치를 얻어옵니다
+        navigator.geolocation.getCurrentPosition(function(position) {
+            console.log('getcurrentPostion start')
+            var lat = position.coords.latitude, // 위도
+                lon = position.coords.longitude; // 경도
 
-    // GeoLocation을 이용해서 접속 위치를 얻어옵니다
-    navigator.geolocation.getCurrentPosition(function (position) {
+            var locPosition = new kakao.maps.LatLng(lat, lon), // 마커가 표시될 위치를 geolocation으로 얻어온 좌표로 생성합니다
+                message = '<div style="padding:5px;">위치등록 <br></div>'; // 인포윈도우에 표시될 내용입니다
 
-        var lat = position.coords.latitude, // 위도
-            lon = position.coords.longitude; // 경도
+            currentPosition = locPosition;
+            // 마커와 인포윈도우를 표시합니다
+            // displayMarker(locPosition, message);
+            console.log("현재위치", lat, lon)
 
-        var locPosition = new kakao.maps.LatLng(lat, lon), // 마커가 표시될 위치를 geolocation으로 얻어온 좌표로 생성합니다
-            message = '<div style="padding:5px;">위치등록 <br></div>'; // 인포윈도우에 표시될 내용입니다
+            console.log("map will setup")
+            var mapContainer = document.getElementById('map'), // 지도를 표시할 div 
+                mapOption = {
+                    center: locPosition, // 지도의 중심좌표
+                    draggable: false, // 지도 이동 제한
+                    level: 1 // 지도의 확대 레벨
+                };
 
-        // 마커와 인포윈도우를 표시합니다
-        // displayMarker(locPosition, message);
-        console.log("현재위치", lat, lon)
+            map = new kakao.maps.Map(mapContainer, mapOption);
+            console.log("register marker will setup")
+            displayMarker(locPosition, message, map);
+            console.log('set map center')
+            map.setCenter(locPosition)
+
+        });
+
+    } else { // HTML5의 GeoLocation을 사용할 수 없을때 마커 표시 위치와 인포윈도우 내용을 설정합니다
+        console.log('geolocation unavailable')
+
+        var locPosition = new kakao.maps.LatLng(33.450701, 126.570667),
+            message = 'geolocation을 사용할수 없어요..'
 
         console.log("map will setup")
         var mapContainer = document.getElementById('map'), // 지도를 표시할 div 
@@ -26,30 +54,12 @@ if (navigator.geolocation) {
             };
 
         map = new kakao.maps.Map(mapContainer, mapOption);
-        console.log("marker will setup")
+        console.log("register marker will setup")
         displayMarker(locPosition, message, map);
 
-    });
+    }
+})
 
-} else { // HTML5의 GeoLocation을 사용할 수 없을때 마커 표시 위치와 인포윈도우 내용을 설정합니다
-    console.log('geolocation unavailable')
-
-    var locPosition = new kakao.maps.LatLng(33.450701, 126.570667),
-        message = 'geolocation을 사용할수 없어요..'
-
-    console.log("map will setup")
-    var mapContainer = document.getElementById('map'), // 지도를 표시할 div 
-        mapOption = {
-            center: locPosition, // 지도의 중심좌표
-            draggable: false, // 지도 이동 제한
-            level: 1 // 지도의 확대 레벨
-        };
-
-    map = new kakao.maps.Map(mapContainer, mapOption);
-    console.log("marker will setup")
-    displayMarker(locPosition, message, map);
-
-}
 
 
 
@@ -82,21 +92,6 @@ function displayMarker(locPosition, message, map) {
     uni_marker = marker;
 }
 
-// function displayMap(locPosition) {
-//     var mapContainer = document.getElementById('map'), // 지도를 표시할 div 
-//         mapOption = {
-//             center: locPosition, // 지도의 중심좌표
-//             draggable: false, // 지도 이동 제한
-//             level: 1 // 지도의 확대 레벨
-//         };
-
-//     var map = new kakao.maps.Map(mapContainer, mapOption); // 지도를 생성합니다
-
-// }
-
-
-
-
 
 var imageSrc = 'https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/marker_red.png', // 마커이미지의 주소입니다    
     imageSize = new kakao.maps.Size(64, 69), // 마커이미지의 크기입니다
@@ -114,14 +109,14 @@ function newSpot() {
     let marker_lat = uni_marker.getPosition().getLat(),
         marker_lon = uni_marker.getPosition().getLng();
     console.log("current marker pos", marker_lat, marker_lon)
-    // call api
+        // call api
 
     // let location = `${marker_lat}, ${marker_lon}`
     let lat = `${marker_lat}`
     let lon = `${marker_lon}`
-    // let pullUp = $('#pullUp').val();
+        // let pullUp = $('#pullUp').val();
     let pullUp = $('input:checkbox[id="pullUp"]').is(":checked")
-    // let parallel = $('#parallel').val();
+        // let parallel = $('#parallel').val();
     let parallel = $('input:checkbox[id="parallel"]').is(":checked")
     let etc = $('#etc').val();
 
@@ -141,7 +136,7 @@ function newSpot() {
         // },
         // crossDomain: true,
         // contentType: 'application/json; charset=utf-8',
-        success: function (response) {
+        success: function(response) {
             if (response['result'] == 'success') {
                 alert(response['msg']);
                 window.location.reload();
@@ -149,10 +144,7 @@ function newSpot() {
         }
     })
 }
-$(document).ready(function () {
-    $('#spots_list').html('')
-    listing()
-})
+
 
 function listing() {
     console.log('listing start')
@@ -160,7 +152,7 @@ function listing() {
         tytpe: "GET",
         url: "https://trainyourself.co.kr/api/spots",
         data: {},
-        success: function (response) {
+        success: function(response) {
             if (response['result'] == 'success') {
                 let spots = response['spots']
                 for (let i = 0; i < spots.length; i++) {
