@@ -1,11 +1,64 @@
 // find spot JS
-function listing() {
+var uni_marker;
+var map;
+var currentPosition;
+
+// 현재 위치 가져오기
+// HTML5의 geolocation으로 사용할 수 있는지 확인합니다 
+if (navigator.geolocation) {
+    console.log('geolocation works')
+        // GeoLocation을 이용해서 접속 위치를 얻어옵니다
+    navigator.geolocation.getCurrentPosition(function(position) {
+
+        var lat = position.coords.latitude, // 위도
+            lon = position.coords.longitude; // 경도
+
+        var locPosition = new kakao.maps.LatLng(lat, lon) // 마커가 표시될 위치를 geolocation으로 얻어온 좌표로 생성합니다 
+
+        // 마커와 인포윈도우를 표시합니다
+        // displayMarker(locPosition, message);
+        console.log("현재위치", lat, lon)
+        var mapContainer = document.getElementById('map'), // 지도를 표시할 div 
+            mapOption = {
+                center: locPosition, // 지도의 중심좌표
+                draggable: true, // 지도 이동 제한
+                level: 2 // 지도의 확대 레벨
+            };
+
+        var map = new kakao.maps.Map(mapContainer, mapOption); // 지도를 생성합니다
+        listing(map)
+
+
+
+    });
+
+
+} else { // HTML5의 GeoLocation을 사용할 수 없을때 마커 표시 위치와 인포윈도우 내용을 설정합니다
+    console.log('geolocation unavailable')
+
+    var locPosition = new kakao.maps.LatLng(33.450701, 126.570667)
+
+    var mapContainer = document.getElementById('map'), // 지도를 표시할 div 
+        mapOption = {
+            center: locPosition, // 지도의 중심좌표
+            draggable: true, // 지도 이동 제한
+            level: 2 // 지도의 확대 레벨
+        };
+
+    var map = new kakao.maps.Map(mapContainer, mapOption); // 지도를 생성합니다
+    listing(map)
+
+}
+console.log('after geolocation')
+console.log(map)
+
+function listing(map) {
 
     $.ajax({
         tytpe: "GET",
         url: "https://trainyourself.co.kr/api/spots",
         data: {},
-        success: function (response) {
+        success: function(response) {
             if (response['result'] == 'success') {
                 let spots = response['spots']
                 for (let i = 0; i < spots.length; i++) {
@@ -29,14 +82,14 @@ function listing() {
                     })
                     console.log(spots[i]['status'])
                 }
-                marker_display()
+                marker_display(map)
 
             }
         }
     })
 }
 
-function marker_display() {
+function marker_display(map) {
     // marker set을 표시하는 코드
     var markers = []
 
@@ -58,13 +111,13 @@ function marker_display() {
         });
 
         var msg = `<div class='iw'>${positions[i].title}`
-        // 확인버튼
+            // 확인버튼
         msg += '<br><button type="button" class="btn btn-success">확인</button>'
-        // 거짓버튼
+            // 거짓버튼
         msg += ' <button type="button" class="btn btn-danger">거짓</button>'
         msg += '</div>'
 
-        console.log('a marker added on markers')
+        console.log(`${i} marker added on markers`)
 
         var iwContent = msg, // 인포윈도우에 표시할 내용
             iwRemoveable = true;
@@ -83,7 +136,9 @@ function marker_display() {
     }
 
     // 마커가 지도 위에 표시되도록 설정합니다
+    console.log(map)
     for (var i = 0; i < markers.length; i++) {
+
         markers[i].setMap(map);
     }
     console.log('markers set up complete')
@@ -92,7 +147,7 @@ function marker_display() {
 
 // 인포윈도우를 표시하는 클로저를 만드는 함수입니다 
 function makeOverListener(map, marker, infowindow) {
-    return function () {
+    return function() {
         infowindow.open(map, marker);
     };
 }
