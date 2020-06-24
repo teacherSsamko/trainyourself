@@ -1,3 +1,4 @@
+from datetime import datetime
 from flask import Flask, jsonify, request
 from flask_cors import CORS, cross_origin
 from pymongo import MongoClient
@@ -26,6 +27,12 @@ def newSpotAPI():
     pullUp_receive = request.form['pullUp_give']
     parallel_receive = request.form['parallel_give']
     etc_receive = request.form['etc_give']
+    address_dong = request.form['address_dong']
+    reg_date = datetime.now()
+
+    if not address_dong:
+        print('address none > fail')
+        return jsonify({'result': 'fail', 'msg': '실패했습니다.'})
 
     spot = {
         'lat': lat_receive,
@@ -35,7 +42,9 @@ def newSpotAPI():
         'etc': etc_receive,
         'valid_count': 1,
         'delete_count': 0,
-        'status': 'pending'
+        'status': 'pending',
+        'address_dong': address_dong,
+        'reg_date': reg_date
     }
 
     print(spot)
