@@ -28,6 +28,7 @@ def newSpotAPI():
     parallel_receive = request.form['parallel_give']
     etc_receive = request.form['etc_give']
     address_dong = request.form['address_dong']
+    address_street = request.form['address_street']
     reg_date = datetime.now()
 
     spot = {
@@ -39,7 +40,8 @@ def newSpotAPI():
         'valid_count': 1,
         'delete_count': 0,
         'status': 'pending',
-        'address_dong': '',
+        'address_dong': address_dong,
+        'address_street': address_street,
         'reg_date': reg_date
     }
 

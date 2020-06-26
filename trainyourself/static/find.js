@@ -2,6 +2,7 @@
 var uni_marker;
 var map;
 var currentPosition;
+var positions;
 
 // 현재 위치 가져오기
 // HTML5의 geolocation으로 사용할 수 있는지 확인합니다 
@@ -50,9 +51,11 @@ if (navigator.geolocation) {
 
 }
 
+$('.equip').click(panTo($(this).index(), positions))
+
 
 function listing(map) {
-
+    positions;
     $.ajax({
         tytpe: "GET",
         url: "https://trainyourself.co.kr/api/spots",
@@ -64,6 +67,15 @@ function listing(map) {
 
                     var latlng = new kakao.maps.LatLng(spots[i]['lat'], spots[i]['lon']);
                     var addr = `${spots[i]['address_dong']}`
+                    var address = addr.split(' ')
+                    addr = ''
+                    for (let i = 0; i < address.length; i++) {
+                        addr += address[i] + ' '
+                        if (address[i].endsWith('구') || address[i].endsWith('동')) {
+                            addr += address[i + 1]
+                            break;
+                        }
+                    }
 
                     var equip = ''
                     if (spots[i]['pullUp'] == 'true') {
@@ -73,9 +85,15 @@ function listing(map) {
                         equip += '평행봉'
                     }
                     var etc = spots[i]['etc']
-                    var tmp = `${addr} - ${equip}<br>`
+                    var tmp = `<span class='equip'>`
+                    if (etc != '') {
+                        tmp += `${addr} - ${equip} &lt; ${etc} &gt;`
+                    } else {
+                        tmp += `${addr} - ${equip}`
+                    }
+                    tmp += ' </span><br>'
 
-                    $('#spots_list').prepend(tmp)
+                    $('#spots_list').append(tmp)
 
                     positions.push({
                             equip: `${equip}`,
@@ -152,4 +170,16 @@ function makeOverListener(map, marker, infowindow) {
     return function() {
         infowindow.open(map, marker);
     };
+}
+
+// 마커 클릭시 해당 위치로 이동하게 하는 함수
+function panTo(i, positions) {
+    console.log(positions)
+    destination = positions[i].latlng
+        // 이동할 위도 경도 위치를 생성합니다 
+        // var moveLatLon = new kakao.maps.LatLng(33.450580, 126.574942);
+
+    // 지도 중심을 부드럽게 이동시킵니다
+    // 만약 이동할 거리가 지도 화면보다 크면 부드러운 효과 없이 이동합니다
+    map.panTo(destination);
 }

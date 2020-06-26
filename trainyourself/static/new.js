@@ -142,7 +142,8 @@ function newSpot() {
     // 문제2)
     // 좌표를 행정동 주소로 바꿔주는 함수인데, 이게 끝나고 ajax에 해당 값을 넣어서 요청하려함.
     console.log('searchAddr start')
-    searchAddrFromCoords(latlng, getAddrInfo)
+        // searchAddrFromCoords(latlng, getAddrInfo)
+    searchDetailAddrFromCoords(latlng, getAddrInfo)
     console.log('searchAddr finish')
 
 
@@ -190,25 +191,44 @@ function searchAddrFromCoords(coords, callback) {
 
 }
 
+function searchDetailAddrFromCoords(coords, callback) {
+    // 좌표로 법정동 상세 주소 정보를 요청합니다
+    geocoder.coord2Address(coords.getLng(), coords.getLat(), callback);
+}
+
 
 // 주소정보를 리턴하는 함수입니다
 function getAddrInfo(result, status) {
     console.log('get Addr info inside')
     if (status === kakao.maps.services.Status.OK) {
+        var dongAddr = ''
+        var streetAddr = ''
         console.log('kakao.maps ok')
-        for (var i = 0; i < result.length; i++) {
-            // 행정동의 region_type 값은 'H' 이므로
-            // console.log(result)
-            // console.log(result[i].region_type)
-            var tmpAddr = ''
-            if (result[i].region_type == 'H') {
-                // 여기에서 ajax호출을 하면 되겠네
-                tmpAddr = result[i].address_name;
-                $('#addr').html(tmpAddr)
-                console.log('found tmaddr', tmpAddr)
-                post_newspot(tmpAddr)
-                break;
-            }
+        console.log(result[0])
+            // for (var i = 0; i < result.length; i++) {
+            //     // 행정동의 region_type 값은 'H' 이므로
+            //     // console.log(result)
+            //     // console.log(result[i].region_type)
+
+        //     console.log(result)
+        //     if (result[i].region_type == 'H') {
+        //         // 여기에서 ajax호출을 하면 되겠네
+        //         dongAddr = result[i].address_name;
+
+
+        //     } else {
+        //         console.log('found tmaddr', streetAddr)
+        //         streetAddr = result[i].address_name;
+        //     }
+        // }
+        var dong = result[0].address.address_name
+        var street = result[0].road_address.address_name
+        if (dong != null && street != null) {
+            post_newspot(dong, street)
+        } else if (dong != null) {
+            post_newspot(dong, '')
+        } else {
+            post_newspot('', street)
         }
     } else {
         console.log('kakao.maps not ok')
@@ -216,7 +236,7 @@ function getAddrInfo(result, status) {
 }
 
 // ajax post method
-function post_newspot(dong) {
+function post_newspot(dong, street) {
     console.log('ajax will start')
     let lat = `${uni_marker.getPosition().getLat()}`
     let lon = `${uni_marker.getPosition().getLng()}`
@@ -232,7 +252,8 @@ function post_newspot(dong) {
             pullUp_give: pullUp,
             parallel_give: parallel,
             etc_give: etc,
-            address_dong: dong
+            address_dong: dong,
+            address_street: street
         }
 
         // success: function(response) {
@@ -319,6 +340,8 @@ function marker_display(map) {
         marker.setMap(map);
     }
     console.log('marker_display finished')
+
+
 
     // 마커가 지도 위에 표시되도록 설정합니다
 }
