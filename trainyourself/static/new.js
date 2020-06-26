@@ -131,50 +131,54 @@ function newSpot() {
         // let parallel = $('#parallel').val();
     let parallel = $('input:checkbox[id="parallel"]').is(":checked")
     let etc = $('#etc').val();
-    var latlng = new kakao.maps.LatLng(lat, lon)
-
-    // 문제2)
-    // 좌표를 행정동 주소로 바꿔주는 함수인데, 이게 끝나고 ajax에 해당 값을 넣어서 요청하려함.
-    searchAddrFromCoords(latlng, getAddrInfo)
+    var latlng = new kakao.maps.LatLng(marker_lat, marker_lon)
+    console.log(lat, lon)
+    console.log(latlng)
 
     if (pullUp == false & parallel == false) {
         alert('기구를 선택하세요');
         return;
     }
+    // 문제2)
+    // 좌표를 행정동 주소로 바꿔주는 함수인데, 이게 끝나고 ajax에 해당 값을 넣어서 요청하려함.
+    console.log('searchAddr start')
+    searchAddrFromCoords(latlng, getAddrInfo)
+    console.log('searchAddr finish')
+
 
     // 문제2-1)
     // 현재는 행정동을 hidden에 넣었다가 가져오는 방식으로 구성되어 있는데, 
     // 위 searchAddFromCoords()에서 return 값으로 받을 수는 없는지... 시도해봤는데 안됨 ㅜㅜ
-    tmpAddr = $('#addr').html()
-    console.log(tmpAddr)
+    // tmpAddr = $('#addr').html()
+    // console.log(tmpAddr)
 
-    // 3. POST /spots/new 에 저장을 요청합니다.
-    $.ajax({
-        type: "POST",
-        url: "https://trainyourself.co.kr/api/spots/new",
-        data: {
-            lat_give: lat,
-            lon_give: lon,
-            pullUp_give: pullUp,
-            parallel_give: parallel,
-            etc_give: etc,
-            address_dong: tmpAddr // 문제가 되는 부분
-        },
+    // // 3. POST /spots/new 에 저장을 요청합니다.
+    // $.ajax({
+    //     type: "POST",
+    //     url: "https://trainyourself.co.kr/api/spots/new",
+    //     data: {
+    //         lat_give: lat,
+    //         lon_give: lon,
+    //         pullUp_give: pullUp,
+    //         parallel_give: parallel,
+    //         etc_give: etc,
+    //         address_dong: tmpAddr // 문제가 되는 부분
+    //     },
 
-        success: function(response) {
-            if (response['result'] == 'success') {
-                alert(response['msg']);
-                window.location.reload();
-            }
-        },
+    //     success: function(response) {
+    //         if (response['result'] == 'success') {
+    //             alert(response['msg']);
+    //             window.location.reload();
+    //         }
+    //     },
 
-    }).done(function(response) {
-        console.log('done!')
-        alert(response['msg'])
-    }).fail(function(response) {
-        console.log('fail get address')
-        alert(response['msg']);
-    })
+    // }).done(function(response) {
+    //     console.log('done!')
+    //     alert(response['msg'])
+    // }).fail(function(response) {
+    //     console.log('fail get address')
+    //     alert(response['msg']);
+    // })
 
 
 }
@@ -189,20 +193,63 @@ function searchAddrFromCoords(coords, callback) {
 
 // 주소정보를 리턴하는 함수입니다
 function getAddrInfo(result, status) {
+    console.log('get Addr info inside')
     if (status === kakao.maps.services.Status.OK) {
+        console.log('kakao.maps ok')
         for (var i = 0; i < result.length; i++) {
             // 행정동의 region_type 값은 'H' 이므로
+            // console.log(result)
+            // console.log(result[i].region_type)
             var tmpAddr = ''
-            if (result[i].region_type === 'H') {
+            if (result[i].region_type == 'H') {
+                // 여기에서 ajax호출을 하면 되겠네
                 tmpAddr = result[i].address_name;
                 $('#addr').html(tmpAddr)
                 console.log('found tmaddr', tmpAddr)
-                console.log($('#addr').html())
+                post_newspot(tmpAddr)
                 break;
             }
-            return tmpAddr
         }
+    } else {
+        console.log('kakao.maps not ok')
     }
+}
+
+// ajax post method
+function post_newspot(dong) {
+    console.log('ajax will start')
+    let lat = `${uni_marker.getPosition().getLat()}`
+    let lon = `${uni_marker.getPosition().getLng()}`
+    let pullUp = $('input:checkbox[id="pullUp"]').is(":checked")
+    let parallel = $('input:checkbox[id="parallel"]').is(":checked")
+    let etc = $('#etc').val();
+    $.ajax({
+        type: "POST",
+        url: "https://trainyourself.co.kr/api/spots/new",
+        data: {
+            lat_give: lat,
+            lon_give: lon,
+            pullUp_give: pullUp,
+            parallel_give: parallel,
+            etc_give: etc,
+            address_dong: dong
+        }
+
+        // success: function(response) {
+        //     if (response['result'] == 'success') {
+        //         alert(response['msg']);
+        //         window.location.reload();
+        //     }
+        // },
+
+    }).done(function(response) {
+        console.log('done!')
+        alert(response['msg'])
+        window.location.assign('/map');
+    }).fail(function(response) {
+        console.log('fail get address')
+        alert(response['msg']);
+    })
 }
 
 function listing(map) {
