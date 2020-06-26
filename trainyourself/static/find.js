@@ -61,25 +61,26 @@ function listing(map) {
             if (response['result'] == 'success') {
                 let spots = response['spots']
                 for (let i = 0; i < spots.length; i++) {
-                    var tmp = `${spots[i]['lat']} ${spots[i]['lon']}`
+
                     var latlng = new kakao.maps.LatLng(spots[i]['lat'], spots[i]['lon']);
+                    var addr = `${spots[i]['address_dong']}`
 
-
-                    var title = ''
+                    var equip = ''
                     if (spots[i]['pullUp'] == 'true') {
-                        title += '철봉 '
+                        equip += '철봉 '
                     }
                     if (spots[i]['parallel'] == 'true') {
-                        title += '평행봉'
+                        equip += '평행봉'
                     }
                     var etc = spots[i]['etc']
-                    title += '<br>' + etc;
-                    tmp += title + '<br>'
+                    var tmp = `${addr} - ${equip}<br>`
+
                     $('#spots_list').prepend(tmp)
 
                     positions.push({
-                            title: `${title}`,
+                            equip: `${equip}`,
                             latlng: latlng,
+                            addr: addr,
                             status: spots[i]['status']
                         })
                         // console.log(spots[i]['status'])
@@ -107,19 +108,18 @@ function marker_display(map) {
         var marker = new kakao.maps.Marker({
             map: map, // 마커를 표시할 지도
             position: positions[i].latlng, // 마커를 표시할 위치
-            title: positions[i].title, // 마커의 타이틀, 마커에 마우스를 올리면 타이틀이 표시됩니다
+            equip: positions[i].equip, // 마커의 타이틀, 마커에 마우스를 올리면 타이틀이 표시됩니다
             image: markerImage, // 마커 이미지 
             clickable: true
         });
 
-        var msg = `<div class='iw'>${positions[i].title}`
+        var msg = `<div class='iw'>${positions[i].equip}`
             //     // 확인버튼
             // msg += '<br><button type="button" class="btn btn-success">확인</button>'
             //     // 거짓버튼
             // msg += ' <button type="button" class="btn btn-danger">거짓</button>'
         msg += '</div>'
 
-        console.log(`${i} marker added on markers`)
 
         var iwContent = msg, // 인포윈도우에 표시할 내용
             iwRemoveable = true;
@@ -138,12 +138,12 @@ function marker_display(map) {
     }
 
     // 마커가 지도 위에 표시되도록 설정합니다
-    console.log(map)
+
     for (var i = 0; i < markers.length; i++) {
 
         markers[i].setMap(map);
     }
-    console.log('markers set up complete')
+
 
 }
 
