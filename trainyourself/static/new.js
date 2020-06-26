@@ -1,11 +1,14 @@
 var uni_marker;
 var map;
 var currentPosition;
+
+// 아래 주석 형태로 표시해 놓았음!
+// 문제 1)
+// 문제 2)
+// 문제 2-1)
+
 // 현재 위치 가져오기
 // HTML5의 geolocation으로 사용할 수 있는지 확인합니다 
-$('#spots_list').html('')
-    // listing()
-console.log('listing finished')
 $(document).ready(function() {
     if (navigator.geolocation) {
         console.log('geolocation work')
@@ -33,9 +36,15 @@ $(document).ready(function() {
 
             map = new kakao.maps.Map(mapContainer, mapOption);
             console.log("register marker will setup")
-            displayMarker(locPosition, message, map);
+                // var promise = listing(map)
             console.log('set map center')
             map.setCenter(locPosition)
+            displayMarker(locPosition, message, map);
+
+            // 문제 1) 
+            // listing(map)이 끝나고 map.setCenter(locPosition)을 해야 함
+            // listing(map)
+            // map.setCenter(locPosition)
 
         });
 
@@ -56,6 +65,7 @@ $(document).ready(function() {
         map = new kakao.maps.Map(mapContainer, mapOption);
         console.log("register marker will setup")
         displayMarker(locPosition, message, map);
+        listing(map)
 
     }
 })
@@ -103,8 +113,10 @@ var positions = [];
 // 마커 이미지의 이미지 주소입니다
 var imageSrc = "https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/markerStar.png";
 
+var geocoder = new kakao.maps.services.Geocoder();
 
 
+// DB에 위치등록을 요청하는 함수. 
 function newSpot() {
     let marker_lat = uni_marker.getPosition().getLat(),
         marker_lon = uni_marker.getPosition().getLng();
@@ -119,34 +131,81 @@ function newSpot() {
         // let parallel = $('#parallel').val();
     let parallel = $('input:checkbox[id="parallel"]').is(":checked")
     let etc = $('#etc').val();
+    var latlng = new kakao.maps.LatLng(lat, lon)
 
+    // 문제2)
+    // 좌표를 행정동 주소로 바꿔주는 함수인데, 이게 끝나고 ajax에 해당 값을 넣어서 요청하려함.
+    searchAddrFromCoords(latlng, getAddrInfo)
 
     if (pullUp == false & parallel == false) {
         alert('기구를 선택하세요');
         return;
     }
 
+    // 문제2-1)
+    // 현재는 행정동을 hidden에 넣었다가 가져오는 방식으로 구성되어 있는데, 
+    // 위 searchAddFromCoords()에서 return 값으로 받을 수는 없는지... 시도해봤는데 안됨 ㅜㅜ
+    tmpAddr = $('#addr').html()
+    console.log(tmpAddr)
+
     // 3. POST /spots/new 에 저장을 요청합니다.
     $.ajax({
         type: "POST",
         url: "https://trainyourself.co.kr/api/spots/new",
-        data: { lat_give: lat, lon_give: lon, pullUp_give: pullUp, parallel_give: parallel, etc_give: etc },
-        // xhrFields: {
-        //     withCredentials: true
-        // },
-        // crossDomain: true,
-        // contentType: 'application/json; charset=utf-8',
+        data: {
+            lat_give: lat,
+            lon_give: lon,
+            pullUp_give: pullUp,
+            parallel_give: parallel,
+            etc_give: etc,
+            address_dong: tmpAddr // 문제가 되는 부분
+        },
+
         success: function(response) {
             if (response['result'] == 'success') {
                 alert(response['msg']);
                 window.location.reload();
             }
-        }
+        },
+
+    }).done(function(response) {
+        console.log('done!')
+        alert(response['msg'])
+    }).fail(function(response) {
+        console.log('fail get address')
+        alert(response['msg']);
     })
+
+
 }
 
 
-function listing() {
+function searchAddrFromCoords(coords, callback) {
+    // 좌표로 행정동 주소 정보를 요청합니다
+    geocoder.coord2RegionCode(coords.getLng(), coords.getLat(), callback);
+
+}
+
+
+// 주소정보를 리턴하는 함수입니다
+function getAddrInfo(result, status) {
+    if (status === kakao.maps.services.Status.OK) {
+        for (var i = 0; i < result.length; i++) {
+            // 행정동의 region_type 값은 'H' 이므로
+            var tmpAddr = ''
+            if (result[i].region_type === 'H') {
+                tmpAddr = result[i].address_name;
+                $('#addr').html(tmpAddr)
+                console.log('found tmaddr', tmpAddr)
+                console.log($('#addr').html())
+                break;
+            }
+            return tmpAddr
+        }
+    }
+}
+
+function listing(map) {
     console.log('listing start')
     $.ajax({
         tytpe: "GET",
@@ -171,7 +230,7 @@ function listing() {
                         latlng: new kakao.maps.LatLng(spots[i]['lat'], spots[i]['lon'])
                     })
                 }
-                marker_display()
+                marker_display(map)
 
             }
         }
@@ -179,7 +238,7 @@ function listing() {
     console.log('listing finish')
 }
 
-function marker_display() {
+function marker_display(map) {
     // marker set을 표시하는 코드
     console.log('marker_display start')
     for (var i = 0; i < positions.length; i++) {
