@@ -49,8 +49,7 @@ if (navigator.geolocation) {
     listing(map)
 
 }
-console.log('after geolocation')
-console.log(map)
+
 
 function listing(map) {
 
@@ -63,6 +62,9 @@ function listing(map) {
                 let spots = response['spots']
                 for (let i = 0; i < spots.length; i++) {
                     var tmp = `${spots[i]['lat']} ${spots[i]['lon']}`
+                    var latlng = new kakao.maps.LatLng(spots[i]['lat'], spots[i]['lon']);
+
+
                     var title = ''
                     if (spots[i]['pullUp'] == 'true') {
                         title += '철봉 '
@@ -76,11 +78,11 @@ function listing(map) {
                     $('#spots_list').prepend(tmp)
 
                     positions.push({
-                        title: `${title}`,
-                        latlng: new kakao.maps.LatLng(spots[i]['lat'], spots[i]['lon']),
-                        status: spots[i]['status']
-                    })
-                    console.log(spots[i]['status'])
+                            title: `${title}`,
+                            latlng: latlng,
+                            status: spots[i]['status']
+                        })
+                        // console.log(spots[i]['status'])
                 }
                 marker_display(map)
 
@@ -111,10 +113,10 @@ function marker_display(map) {
         });
 
         var msg = `<div class='iw'>${positions[i].title}`
-            // 확인버튼
-        msg += '<br><button type="button" class="btn btn-success">확인</button>'
-            // 거짓버튼
-        msg += ' <button type="button" class="btn btn-danger">거짓</button>'
+            //     // 확인버튼
+            // msg += '<br><button type="button" class="btn btn-success">확인</button>'
+            //     // 거짓버튼
+            // msg += ' <button type="button" class="btn btn-danger">거짓</button>'
         msg += '</div>'
 
         console.log(`${i} marker added on markers`)
