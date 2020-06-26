@@ -1,13 +1,4 @@
-{% extends 'base.html' %}
-{% block title %}
-위치찾기 | {{ block.super }}
-{% endblock title %}
-{% block nav-new %}active{% endblock nav-new %}
-{% block header %}
-
-{% endblock header %}
-{% block contents %}
-{% load static %}
+{% extends 'base.html' %} {% block title %} 위치찾기 | {{ block.super }} {% endblock title %} {% block nav-new %}active{% endblock nav-new %} {% block header %} {% endblock header %} {% block contents %} {% load static %}
 <div id="map" style="width:100%;height:400px;"></div>
 <div id="register">
     <input type="checkbox" name="pullUp" id="pullUp" class="form-class">
@@ -18,12 +9,12 @@
     <textarea name="etc" id="etc" cols="30" rows="10" class="form-class" placeholder="기타사항"></textarea>
     <br>
     <input type="button" value="등록" onclick="newSpot()">
+    <span id="addr" hidden></span>
 </div>
 <div id="spots_list"></div>
-<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey={{ appkey }}"></script>
+<!-- <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey={{ appkey }}"></script> -->
 <!-- services와 clusterer, drawing 라이브러리 불러오기 -->
-<script type="text/javascript"
-    src="//dapi.kakao.com/v2/maps/sdk.js?appkey={{ appkey }}&libraries=services,clusterer,drawing"></script>
+<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey={{ appkey }}&libraries=services,clusterer,drawing"></script>
 
 <script src="{% static 'new.js' %}"></script>
 {% endblock contents %}

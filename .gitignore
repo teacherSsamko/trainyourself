@@ -4,3 +4,4 @@ production.json
 .DS_Store
 *.pyc
 production.py
+db.sqlite3
