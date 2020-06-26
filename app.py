@@ -30,10 +30,6 @@ def newSpotAPI():
     address_dong = request.form['address_dong']
     reg_date = datetime.now()
 
-    if not address_dong:
-        print('address none > fail')
-        return jsonify({'result': 'fail', 'msg': '실패했습니다.'})
-
     spot = {
         'lat': lat_receive,
         'lon': lon_receive,
@@ -43,7 +39,7 @@ def newSpotAPI():
         'valid_count': 1,
         'delete_count': 0,
         'status': 'pending',
-        'address_dong': address_dong,
+        'address_dong': '',
         'reg_date': reg_date
     }
 
@@ -52,6 +48,14 @@ def newSpotAPI():
     db.trainyourself.insert_one(spot)
 
     return jsonify({'result': 'success', 'msg': '등록되었습니다.'})
+
+
+# 동이 없는 데이터들 찾아서 동 입력
+# doesn't work
+@app.route('/get_dong', methods=['GET'])
+@cross_origin(origin='*', headers=['Content-Type', 'Authorization'])
+def get_dong_addr():
+    no_dong = list(db.trainyourself.find({'address_dong': ''}, {'_id': 0}))
 
 
 @app.route('/spots', methods=['GET'])
