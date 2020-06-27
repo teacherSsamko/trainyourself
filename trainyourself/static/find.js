@@ -231,10 +231,15 @@ function marker_display(map) {
 
     clusterer.addMarkers(markers)
     
-    console.log(markers)
+    // console.log(markers)
 
     
     addClickEventOnMarkers()
+    kakao.maps.event.addListener(map, 'click', function(mouseEvent) {
+        for(let i =0; i < overlay_list.length; i++){
+            overlay_list[i].setMap(null)
+        }
+    });
     
 
 }
@@ -285,7 +290,7 @@ function closeOverlay(i) {
     overlay.setMap(null);     
 }
 
-// 마커에 클릭이벤트를 등록합니다
+// 마커에 클릭이벤트를 등록합니다. > 오버레이 띄우기
 function addClickEventOnMarkers(){
     for(let i = 0; i < markers.length; i++){
         kakao.maps.event.addListener(markers[i], 'click', function(){
@@ -293,5 +298,5 @@ function addClickEventOnMarkers(){
         });
     
     }
-
 }
+
