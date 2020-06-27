@@ -142,8 +142,8 @@ function newSpot() {
     // 문제2)
     // 좌표를 행정동 주소로 바꿔주는 함수인데, 이게 끝나고 ajax에 해당 값을 넣어서 요청하려함.
     console.log('searchAddr start')
-        // searchAddrFromCoords(latlng, getAddrInfo)
-    searchDetailAddrFromCoords(latlng, getAddrInfo)
+        // searchAddrFromCoords(latlng, getDetailAddrInfo)
+    searchDetailAddrFromCoords(latlng, getDetailAddrInfo)
     console.log('searchAddr finish')
 
 
@@ -198,7 +198,7 @@ function searchDetailAddrFromCoords(coords, callback) {
 
 
 // 주소정보를 리턴하는 함수입니다
-function getAddrInfo(result, status) {
+function getDetailAddrInfo(result, status) {
     console.log('get Addr info inside')
     if (status === kakao.maps.services.Status.OK) {
         var dongAddr = ''
@@ -221,6 +221,9 @@ function getAddrInfo(result, status) {
         //         streetAddr = result[i].address_name;
         //     }
         // }
+
+        // ToDo: 주소정보가 아예 없는 곳에 철봉이 있을 수도 있다. 
+        // 그럴 땐 행정동으로 구해야하는데
         var dong = result[0].address.address_name
         var street = result[0].road_address.address_name
         if (dong != null && street != null) {
