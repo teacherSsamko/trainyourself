@@ -2,7 +2,7 @@
 var uni_marker;
 var map;
 var currentPosition;
-var positions;
+var latlongs = [];
 
 // 현재 위치 가져오기
 // HTML5의 geolocation으로 사용할 수 있는지 확인합니다 
@@ -51,11 +51,11 @@ if (navigator.geolocation) {
 
 }
 
-$('.equip').click(panTo($(this).index(), positions))
+
+
 
 
 function listing(map) {
-    positions;
     $.ajax({
         tytpe: "GET",
         url: "https://trainyourself.co.kr/api/spots",
@@ -71,8 +71,10 @@ function listing(map) {
                     addr = ''
                     for (let i = 0; i < address.length; i++) {
                         addr += address[i] + ' '
-                        if (address[i].endsWith('구') || address[i].endsWith('동')) {
+                        if (address[i].endsWith('구')) {
                             addr += address[i + 1]
+                            break;
+                        } else if (address[i].endsWith('동')) {
                             break;
                         }
                     }
@@ -106,6 +108,12 @@ function listing(map) {
                 marker_display(map)
 
             }
+        }
+    }).done(function(response) {
+        let spots = response['spots']
+        for (let i = 0; i < spots.length; i++) {
+            var latlng = new kakao.maps.LatLng(spots[i]['lat'], spots[i]['lon']);
+            latlongs.push(latlng)
         }
     })
 }
@@ -163,6 +171,8 @@ function marker_display(map) {
     }
 
 
+
+
 }
 
 // 인포윈도우를 표시하는 클로저를 만드는 함수입니다 
@@ -173,9 +183,9 @@ function makeOverListener(map, marker, infowindow) {
 }
 
 // 마커 클릭시 해당 위치로 이동하게 하는 함수
-function panTo(i, positions) {
-    console.log(positions)
-    destination = positions[i].latlng
+function panTo(i, latlongs) {
+    console.log(latlongs)
+    destination = latlongs[i]
         // 이동할 위도 경도 위치를 생성합니다 
         // var moveLatLon = new kakao.maps.LatLng(33.450580, 126.574942);
 
@@ -183,3 +193,8 @@ function panTo(i, positions) {
     // 만약 이동할 거리가 지도 화면보다 크면 부드러운 효과 없이 이동합니다
     map.panTo(destination);
 }
+
+$(document).ready(function() {
+    $(document).on('click', '.equip', panTo($(this).index(), positions))
+
+})

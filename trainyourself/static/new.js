@@ -227,8 +227,10 @@ function getAddrInfo(result, status) {
             post_newspot(dong, street)
         } else if (dong != null) {
             post_newspot(dong, '')
-        } else {
+        } else if (street != null) {
             post_newspot('', street)
+        } else {
+            post_newspot('주소 정보 없음니동', '')
         }
     } else {
         console.log('kakao.maps not ok')
