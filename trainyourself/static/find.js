@@ -1,4 +1,7 @@
 // find spot JS
+// 마커를 표시할 위치와 title 객체 배열입니다 
+var positions = [];
+
 var uni_marker;
 var currentPosition;
 var latlongs = [];
@@ -11,6 +14,8 @@ var mapContainer = document.getElementById('map'), // 지도를 표시할 div
     };
 
 var map = new kakao.maps.Map(mapContainer, mapOption)
+var overlay_list = [];
+var markers = []
 
 // 현재 위치 가져오기
 // HTML5의 geolocation으로 사용할 수 있는지 확인합니다 
@@ -109,6 +114,8 @@ function listing(map) {
                             equip: `${equip}`,
                             latlng: latlng,
                             addr: addr,
+                            address_dong: spots[i]['address_dong'],
+                            address_street: spots[i]['address_street'],
                             status: spots[i]['status']
                         })
                         // console.log(spots[i]['status'])
@@ -133,7 +140,7 @@ function listing(map) {
 
 function marker_display(map) {
     // marker set을 표시하는 코드
-    var markers = []
+    // var markers = []
 
     for (var i = 0; i < positions.length; i++) {
 
@@ -145,7 +152,7 @@ function marker_display(map) {
 
         // 마커를 생성합니다
         var marker = new kakao.maps.Marker({
-            map: map, // 마커를 표시할 지도
+            // map: map, // 마커를 표시할 지도
             position: positions[i].latlng, // 마커를 표시할 위치
             equip: positions[i].equip, // 마커의 타이틀, 마커에 마우스를 올리면 타이틀이 표시됩니다
             image: markerImage, // 마커 이미지 
@@ -164,27 +171,71 @@ function marker_display(map) {
             iwRemoveable = true;
 
         // 인포윈도우를 생성합니다
-        var infowindow = new kakao.maps.InfoWindow({
-            content: iwContent,
-            removable: iwRemoveable
+        // var infowindow = new kakao.maps.InfoWindow({
+        //     content: iwContent,
+        //     removable: iwRemoveable
+        // });
+        var overlay_content = '<div class="wrap">' + 
+                            '    <div class="info">' + 
+                            '        <div class="title">' + 
+                            `            ${positions[i].equip}` + 
+                            `            <div class="close" onclick="closeOverlay(${i})" title="닫기"></div>` + 
+                            '        </div>' + 
+                            '        <div class="body">' + 
+                            '            <div class="img">' +
+                            '                <img src="https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/marker_red.png" width="73" height="70">' +
+                            '           </div>' + 
+                            '            <div class="desc">' + 
+                            `                <div class="ellipsis">${positions[i].address_street}</div>` + 
+                            `                <div class="jibun ellipsis">${positions[i].address_dong}</div>` + 
+                            // '                <div><a href="https://www.kakaocorp.com/main" target="_blank" class="link">홈페이지</a></div>' + 
+                            '            </div>' + 
+                            '        </div>' + 
+                            '    </div>' +    
+                            '</div>'
+
+        var overlay = new kakao.maps.CustomOverlay({
+            content: overlay_content,
+            // map: map,
+            position: marker.getPosition()       
         });
 
+        
+        overlay_list.push(overlay)
 
 
-        // 마커에 클릭이벤트를 등록합니다
-        kakao.maps.event.addListener(marker, 'click', makeOverListener(map, marker, infowindow));
         markers.push(marker)
     }
 
     // 마커가 지도 위에 표시되도록 설정합니다
+    // 마커마다 클릭이벤트를 지정합니다.
 
-    for (var i = 0; i < markers.length; i++) {
+    
 
-        markers[i].setMap(map);
-    }
+    // 마커 클러스터링
+    var clusterer = new kakao.maps.MarkerClusterer({
+        map: map,
+        markers: markers,
+        // gridSize: 35,
+        averageCenter: true,
+        minLevel: 4,
+        // disableClickZoom: true,
+        styles: [{
+            width : '53px', height : '52px',
+            background: 'aquamarine',
+            color: '#fff',
+            textAlign: 'center',
+            lineHeight: '54px'
+        }]
+    });
 
+    clusterer.addMarkers(markers)
+    
+    console.log(markers)
 
-
+    
+    addClickEventOnMarkers()
+    
 
 }
 
@@ -199,9 +250,9 @@ function makeOverListener(map, marker, infowindow) {
 function panTo(i) {
     // var latlongs = positions
     if (i == -1) { i = 0 }
-    console.log(latlongs)
-    console.log(latlongs.length)
-    console.log(i)
+    // console.log(latlongs)
+    // console.log(latlongs.length)
+    // console.log(i)
     if (latlongs.length == 0) {
         destination = new kakao.maps.LatLng(33.450580, 126.574942)
     } else {
@@ -227,3 +278,20 @@ $(document).ready(function() {
     //     var index = $(this).index()
     //     panTo(index)
     // })
+
+// 커스텀 오버레이를 닫기 위해 호출되는 함수입니다 
+function closeOverlay(i) {
+    var overlay = overlay_list[i]
+    overlay.setMap(null);     
+}
+
+// 마커에 클릭이벤트를 등록합니다
+function addClickEventOnMarkers(){
+    for(let i = 0; i < markers.length; i++){
+        kakao.maps.event.addListener(markers[i], 'click', function(){
+            overlay_list[i].setMap(map)
+        });
+    
+    }
+
+}
