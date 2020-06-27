@@ -225,15 +225,19 @@ function getDetailAddrInfo(result, status) {
         // ToDo: 주소정보가 아예 없는 곳에 철봉이 있을 수도 있다. 
         // 그럴 땐 행정동으로 구해야하는데
         var dong = result[0].address.address_name
-        var street = result[0].road_address.address_name
-        if (dong != null && street != null) {
-            post_newspot(dong, street)
-        } else if (dong != null) {
-            post_newspot(dong, '')
-        } else if (street != null) {
-            post_newspot('', street)
-        } else {
-            post_newspot('주소 정보 없음니동', '')
+        var street = ''
+        try {
+            street = result[0].road_address.address_name
+        }finally{
+            if (dong != null && street != '') {
+                post_newspot(dong, street)
+            } else if (dong != null) {
+                post_newspot(dong, '')
+            } else if (street != '') {
+                post_newspot('', street)
+            } else {
+                post_newspot('주소 정보 없음니동', '')
+            }
         }
     } else {
         console.log('kakao.maps not ok')
