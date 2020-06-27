@@ -1,0 +1,7 @@
+.equip {
+    text-decoration: underline;
+}
+
+.equip:hover {
+    cursor: pointer;
+}

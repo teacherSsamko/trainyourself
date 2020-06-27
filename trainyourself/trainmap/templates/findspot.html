@@ -1,4 +1,5 @@
-{% extends 'base.html' %} {% block title %} 위치찾기 | {{ block.super }} {% endblock title %} {% block nav-find %}active{% endblock nav-find %} {% block header %} {% endblock header %} {% block contents %} {% load static %}
+{% extends 'base.html' %} {% block title %} 위치찾기 | {{ block.super }} {% endblock title %} {% block nav-find %}active{% endblock nav-find %} {% load static %} {% block header %}
+<link rel="stylesheet" href="{% static 'css/base.css' %}"> {% endblock header %} {% block contents %}
 <div id="map" style="width:100%;height:400px;"></div>
 
 <div id="spots_list"></div>
