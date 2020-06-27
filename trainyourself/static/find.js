@@ -1,8 +1,16 @@
 // find spot JS
 var uni_marker;
-var map;
 var currentPosition;
 var latlongs = [];
+var locPosition = new kakao.maps.LatLng(36.29746481647284, 127.56879367588002)
+var mapContainer = document.getElementById('map'), // 지도를 표시할 div 
+    mapOption = {
+        center: locPosition, // 지도의 중심좌표
+        draggable: true, // 지도 이동 제한
+        level: 2 // 지도의 확대 레벨
+    };
+
+var map = new kakao.maps.Map(mapContainer, mapOption)
 
 // 현재 위치 가져오기
 // HTML5의 geolocation으로 사용할 수 있는지 확인합니다 
@@ -19,14 +27,14 @@ if (navigator.geolocation) {
         // 마커와 인포윈도우를 표시합니다
         // displayMarker(locPosition, message);
         console.log("현재위치", lat, lon)
-        var mapContainer = document.getElementById('map'), // 지도를 표시할 div 
+        mapContainer = document.getElementById('map'), // 지도를 표시할 div 
             mapOption = {
                 center: locPosition, // 지도의 중심좌표
                 draggable: true, // 지도 이동 제한
                 level: 2 // 지도의 확대 레벨
             };
 
-        var map = new kakao.maps.Map(mapContainer, mapOption); // 지도를 생성합니다
+        map = new kakao.maps.Map(mapContainer, mapOption); // 지도를 생성합니다
         listing(map)
 
 
@@ -39,14 +47,14 @@ if (navigator.geolocation) {
 
     var locPosition = new kakao.maps.LatLng(33.450701, 126.570667)
 
-    var mapContainer = document.getElementById('map'), // 지도를 표시할 div 
+    mapContainer = document.getElementById('map'), // 지도를 표시할 div 
         mapOption = {
             center: locPosition, // 지도의 중심좌표
             draggable: true, // 지도 이동 제한
             level: 2 // 지도의 확대 레벨
         };
 
-    var map = new kakao.maps.Map(mapContainer, mapOption); // 지도를 생성합니다
+    map = new kakao.maps.Map(mapContainer, mapOption); // 지도를 생성합니다
     listing(map)
 
 }
@@ -105,6 +113,7 @@ function listing(map) {
                         })
                         // console.log(spots[i]['status'])
                 }
+
                 marker_display(map)
 
             }
@@ -115,6 +124,10 @@ function listing(map) {
             var latlng = new kakao.maps.LatLng(spots[i]['lat'], spots[i]['lon']);
             latlongs.push(latlng)
         }
+        $('.equip').click(function() {
+            var index = $(this).index('.equip')
+            panTo(index)
+        })
     })
 }
 
@@ -183,18 +196,34 @@ function makeOverListener(map, marker, infowindow) {
 }
 
 // 마커 클릭시 해당 위치로 이동하게 하는 함수
-function panTo(i, latlongs) {
+function panTo(i) {
+    // var latlongs = positions
+    if (i == -1) { i = 0 }
     console.log(latlongs)
-    destination = latlongs[i]
-        // 이동할 위도 경도 위치를 생성합니다 
-        // var moveLatLon = new kakao.maps.LatLng(33.450580, 126.574942);
+    console.log(latlongs.length)
+    console.log(i)
+    if (latlongs.length == 0) {
+        destination = new kakao.maps.LatLng(33.450580, 126.574942)
+    } else {
+        destination = latlongs[i]
+
+    }
+    // 이동할 위도 경도 위치를 생성합니다 
+    // var moveLatLon = new kakao.maps.LatLng(33.450580, 126.574942);
 
     // 지도 중심을 부드럽게 이동시킵니다
     // 만약 이동할 거리가 지도 화면보다 크면 부드러운 효과 없이 이동합니다
+    // var thisMap = map
+    // thisMap.panTo(destination);
     map.panTo(destination);
 }
 
 $(document).ready(function() {
-    $(document).on('click', '.equip', panTo($(this).index(), positions))
+        // $(document).on('click', '.equip', panTo($(this).index()))
 
-})
+    })
+    // var equip = $('.equip')
+    // $('.equip').click(function() {
+    //     var index = $(this).index()
+    //     panTo(index)
+    // })
