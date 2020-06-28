@@ -216,9 +216,8 @@ function post_newspot(dong, street) {
         // },
 
     }).done(function(response) {
-
         alert(response['msg'])
-        window.location.assign('/map');
+        window.location.assign('/');
     }).fail(function(response) {
         console.log('fail get address')
         alert(response['msg']);
