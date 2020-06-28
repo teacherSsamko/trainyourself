@@ -15,3 +15,7 @@
 .show {
     display: block;
 }
+
+.filter {
+    margin: 2px;
+}

@@ -16,6 +16,7 @@ var mapContainer = document.getElementById('map'), // 지도를 표시할 div
 var map = new kakao.maps.Map(mapContainer, mapOption)
 var overlay_list = [];
 var markers = []
+var provinces = [];
 
 // 현재 위치 가져오기
 // HTML5의 geolocation으로 사용할 수 있는지 확인합니다 
@@ -76,6 +77,7 @@ function listing(map) {
         success: function(response) {
             if (response['result'] == 'success') {
                 let spots = response['spots']
+                $('#spots_button').empty()
                 for (let i = 0; i < spots.length; i++) {
 
                     var latlng = new kakao.maps.LatLng(spots[i]['lat'], spots[i]['lon']);
@@ -91,6 +93,16 @@ function listing(map) {
                             break;
                         }
                     }
+                    var province = address[0]
+                    if (!provinces.includes(province)) {
+                        if (province.includes('제주')) {
+                            province = '제주'
+                        }
+                        provinces.push(province)
+                        var tmp_btn = `<button type="button" class="btn btn-outline-primary filter">${province}</button>`
+                        $('#spots_button').append(tmp_btn);
+
+                    }
 
                     var equip = ''
                     if (spots[i]['pullUp'] == 'true') {
@@ -100,26 +112,52 @@ function listing(map) {
                         equip += '평행봉'
                     }
                     var etc = spots[i]['etc']
-                    var tmp = `<span class='equip filterDiv'>`
+                    var tmp = `<div class='equip filterDiv'>`
                     if (etc != '') {
                         tmp += `${addr} - ${equip} &lt; ${etc} &gt;`
                     } else {
                         tmp += `${addr} - ${equip}`
                     }
-                    tmp += ' </span>'
+                    tmp += ' </div>'
 
                     $('#spots_list').append(tmp)
 
                     positions.push({
-                            equip: `${equip}`,
-                            latlng: latlng,
-                            addr: addr,
-                            address_dong: spots[i]['address_dong'],
-                            address_street: spots[i]['address_street'],
-                            status: spots[i]['status']
+                        equip: `${equip}`,
+                        latlng: latlng,
+                        addr: addr,
+                        address_dong: spots[i]['address_dong'],
+                        address_street: spots[i]['address_street'],
+                        status: spots[i]['status']
+                    });
+                    // console.log(spots[i]['status'])
+                    var filter = $('.filter').html()
+
+                    $('.filter').click(function() {
+                        var i = $(this).index()
+                        var filter = $(this).text();
+                        $('.btn-primary').each(function() {
+                            $(this).removeClass('btn-primary')
+                            $(this).addClass('btn-outline-primary')
                         })
-                        // console.log(spots[i]['status'])
+                        $(this).removeClass('btn-outline-primary')
+                        $(this).addClass('btn-primary')
+                        $('.equip').each(function(index) {
+                            var addr = $(this).text();
+                            if (addr.startsWith(filter)) {
+                                $(this).addClass("show")
+                            } else {
+                                $(this).removeClass("show")
+                            }
+
+                        })
+
+                    })
+
+
+
                 }
+
 
                 marker_display(map)
 
