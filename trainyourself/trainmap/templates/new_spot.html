@@ -1,7 +1,6 @@
 {% extends 'base.html' %} {% block title %} 위치찾기 | {{ block.super }} {% endblock title %} {% block nav-new %}active{% endblock nav-new %} {% load static %} {% block header %}
 <link rel="stylesheet" href="{% static 'css/base.css' %}">
-<link rel="stylesheet" href="{% static 'css/new.css' %}">
-{% endblock header %} {% block contents %} 
+<link rel="stylesheet" href="{% static 'css/new.css' %}"> {% endblock header %} {% block contents %}
 <div id="map" style="width:100%;height:400px;"></div>
 <div id="register">
     <input type="checkbox" name="pullUp" id="pullUp" class="form-class">
@@ -9,7 +8,7 @@
     <input type="checkbox" name="parallel" id="parallel" class="form-class">
     <label for="parallel">평행봉</label>
     <br>
-    <textarea name="etc" id="etc" cols="30" rows="10" class="form-class" placeholder="기타사항"></textarea>
+    <textarea name="etc" id="etc" cols="30" rows="3" class="form-class" placeholder="기타사항"></textarea>
     <br>
     <input type="button" value="등록" onclick="newSpot()">
     <span id="addr" hidden></span>
