@@ -1,11 +1,17 @@
 #spots_list {
     overflow: hidden;
-  }
+}
+
 .filterDiv {
     float: left;
-    display: none; /* Hidden by default */
+    display: none;
+    /* Hidden by default */
+    margin: 2px;
+    padding: 2px;
+    background-color: cornflowerblue;
+    color: white;
 }
 
 .show {
-display: block;
+    display: block;
 }
