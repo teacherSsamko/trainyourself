@@ -100,13 +100,13 @@ function listing(map) {
                         equip += '평행봉'
                     }
                     var etc = spots[i]['etc']
-                    var tmp = `<span class='equip'>`
+                    var tmp = `<span class='equip filterDiv'>`
                     if (etc != '') {
                         tmp += `${addr} - ${equip} &lt; ${etc} &gt;`
                     } else {
                         tmp += `${addr} - ${equip}`
                     }
-                    tmp += ' </span><br>'
+                    tmp += ' </span>'
 
                     $('#spots_list').append(tmp)
 
@@ -135,7 +135,7 @@ function listing(map) {
             var index = $(this).index('.equip')
             panTo(index)
             overlay_list[index].setMap(map)
-            // overylay 여기
+                // overylay 여기
         })
     })
 }
@@ -177,32 +177,32 @@ function marker_display(map) {
         //     content: iwContent,
         //     removable: iwRemoveable
         // });
-        var overlay_content = '<div class="wrap">' + 
-                            '    <div class="info">' + 
-                            '        <div class="title">' + 
-                            `            ${positions[i].equip}` + 
-                            `            <div class="close" onclick="closeOverlay(${i})" title="닫기"></div>` + 
-                            '        </div>' + 
-                            '        <div class="body">' + 
-                            '            <div class="img">' +
-                            '                <img src="https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/marker_red.png" width="73" height="70">' +
-                            '           </div>' + 
-                            '            <div class="desc">' + 
-                            `                <div class="ellipsis">${positions[i].address_street}</div>` + 
-                            `                <div class="jibun ellipsis">${positions[i].address_dong}</div>` + 
-                            // '                <div><a href="https://www.kakaocorp.com/main" target="_blank" class="link">홈페이지</a></div>' + 
-                            '            </div>' + 
-                            '        </div>' + 
-                            '    </div>' +    
-                            '</div>'
+        var overlay_content = '<div class="wrap">' +
+            '    <div class="info">' +
+            '        <div class="title">' +
+            `            ${positions[i].equip}` +
+            `            <div class="close" onclick="closeOverlay(${i})" title="닫기"></div>` +
+            '        </div>' +
+            '        <div class="body">' +
+            '            <div class="img">' +
+            '                <img src="https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/marker_red.png" width="73" height="70">' +
+            '           </div>' +
+            '            <div class="desc">' +
+            `                <div class="ellipsis">${positions[i].address_street}</div>` +
+            `                <div class="jibun ellipsis">${positions[i].address_dong}</div>` +
+            // '                <div><a href="https://www.kakaocorp.com/main" target="_blank" class="link">홈페이지</a></div>' + 
+            '            </div>' +
+            '        </div>' +
+            '    </div>' +
+            '</div>'
 
         var overlay = new kakao.maps.CustomOverlay({
             content: overlay_content,
             // map: map,
-            position: marker.getPosition()       
+            position: marker.getPosition()
         });
 
-        
+
         overlay_list.push(overlay)
 
 
@@ -212,7 +212,7 @@ function marker_display(map) {
     // 마커가 지도 위에 표시되도록 설정합니다
     // 마커마다 클릭이벤트를 지정합니다.
 
-    
+
 
     // 마커 클러스터링
     var clusterer = new kakao.maps.MarkerClusterer({
@@ -223,7 +223,8 @@ function marker_display(map) {
         minLevel: 4,
         // disableClickZoom: true,
         styles: [{
-            width : '53px', height : '52px',
+            width: '53px',
+            height: '52px',
             background: 'aquamarine',
             color: '#fff',
             textAlign: 'center',
@@ -232,17 +233,17 @@ function marker_display(map) {
     });
 
     clusterer.addMarkers(markers)
-    
+
     // console.log(markers)
 
-    
+
     addClickEventOnMarkers()
     kakao.maps.event.addListener(map, 'click', function(mouseEvent) {
-        for(let i =0; i < overlay_list.length; i++){
+        for (let i = 0; i < overlay_list.length; i++) {
             overlay_list[i].setMap(null)
         }
     });
-    
+
 
 }
 
@@ -276,32 +277,22 @@ function panTo(i) {
     map.panTo(destination);
 }
 
-$(document).ready(function() {
-        // $(document).on('click', '.equip', panTo($(this).index()))
 
-    })
-    // var equip = $('.equip')
-    // $('.equip').click(function() {
-    //     var index = $(this).index()
-    //     panTo(index)
-    // })
 
 // 커스텀 오버레이를 닫기 위해 호출되는 함수입니다 
 function closeOverlay(i) {
     var overlay = overlay_list[i]
-    overlay.setMap(null);     
+    overlay.setMap(null);
 }
 
 // 마커에 클릭이벤트를 등록합니다. > 오버레이 띄우기
-function addClickEventOnMarkers(){
-    for(let i = 0; i < markers.length; i++){
-        kakao.maps.event.addListener(markers[i], 'click', function(){
+function addClickEventOnMarkers() {
+    for (let i = 0; i < markers.length; i++) {
+        kakao.maps.event.addListener(markers[i], 'click', function() {
             overlay_list[i].setMap(map)
         });
-    
+
     }
 }
 
 // 버튼 클릭으로 list item filtering
-
-

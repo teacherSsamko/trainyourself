@@ -1,7 +1,12 @@
 {% extends 'base.html' %} {% block title %} 위치찾기 | {{ block.super }} {% endblock title %} {% block nav-find %}active{% endblock nav-find %} {% load static %} {% block header %}
-<link rel="stylesheet" href="{% static 'css/base.css' %}"> {% endblock header %} {% block contents %}
+<link rel="stylesheet" href="{% static 'css/base.css' %}">
+<link rel="stylesheet" href="{% static 'css/filter_list.css' %}">
+ {% endblock header %} {% block contents %}
 <div id="map" style="width:100%;height:400px;"></div>
-
+<div id="spots_button">
+    <button type="button" class="btn btn-outline-primary filter">서울</button>
+    <button type="button" class="btn btn-outline-primary filter">대전</button>
+</div>
 <div id="spots_list"></div>
 <!-- <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey={{ appkey }}"></script> -->
 <!-- services와 clusterer, drawing 라이브러리 불러오기 -->
@@ -22,6 +27,8 @@
     // 아래 코드는 지도 위의 마커를 제거하는 코드입니다
     // marker.setMap(null);
 </script>
+
+<script src="{% static 'list_filter.js' %}"></script>
 <script src="{% static 'find.js' %}"></script>
 
 

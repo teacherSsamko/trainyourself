@@ -22,7 +22,7 @@ from trainmap.views import FindSpot, NewSpot
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('map/', FindSpot.as_view(), name='map'),
-    path('map/newspot/', NewSpot.as_view(), name='new_spot'),
+    path('', FindSpot.as_view(), name='map'),
+    path('newspot/', NewSpot.as_view(), name='new_spot'),
     re_path(r'^api-auth/', include('rest_framework.urls')),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

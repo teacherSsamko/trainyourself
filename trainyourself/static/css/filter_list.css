@@ -1,0 +1,11 @@
+#spots_list {
+    overflow: hidden;
+  }
+.filterDiv {
+    float: left;
+    display: none; /* Hidden by default */
+}
+
+.show {
+display: block;
+}
