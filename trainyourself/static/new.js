@@ -7,10 +7,10 @@ var currentPosition;
 // HTML5의 geolocation으로 사용할 수 있는지 확인합니다 
 $(document).ready(function() {
     if (navigator.geolocation) {
-        console.log('geolocation work')
-            // GeoLocation을 이용해서 접속 위치를 얻어옵니다
+
+        // GeoLocation을 이용해서 접속 위치를 얻어옵니다
         navigator.geolocation.getCurrentPosition(function(position) {
-            console.log('getcurrentPostion start')
+
             var lat = position.coords.latitude, // 위도
                 lon = position.coords.longitude; // 경도
 
@@ -19,10 +19,7 @@ $(document).ready(function() {
 
             currentPosition = locPosition;
             // 마커와 인포윈도우를 표시합니다
-            // displayMarker(locPosition, message);
-            console.log("현재위치", lat, lon)
 
-            console.log("map will setup")
             var mapContainer = document.getElementById('map'), // 지도를 표시할 div 
                 mapOption = {
                     center: locPosition, // 지도의 중심좌표
@@ -31,11 +28,10 @@ $(document).ready(function() {
                 };
 
             map = new kakao.maps.Map(mapContainer, mapOption);
-            console.log("register marker will setup")
-                // var promise = listing(map)
-            console.log('set map center')
+            // var promise = listing(map)
             map.setCenter(locPosition)
             displayMarker(locPosition, message, map);
+            listing(map)
 
             // 문제 1) 
             // listing(map)이 끝나고 map.setCenter(locPosition)을 해야 함
@@ -50,7 +46,6 @@ $(document).ready(function() {
         var locPosition = new kakao.maps.LatLng(33.450701, 126.570667),
             message = 'geolocation을 사용할수 없어요..'
 
-        console.log("map will setup")
         var mapContainer = document.getElementById('map'), // 지도를 표시할 div 
             mapOption = {
                 center: locPosition, // 지도의 중심좌표
@@ -59,7 +54,7 @@ $(document).ready(function() {
             };
 
         map = new kakao.maps.Map(mapContainer, mapOption);
-        console.log("register marker will setup")
+
         displayMarker(locPosition, message, map);
         listing(map)
 
@@ -120,8 +115,8 @@ var geocoder = new kakao.maps.services.Geocoder();
 function newSpot() {
     let marker_lat = uni_marker.getPosition().getLat(),
         marker_lon = uni_marker.getPosition().getLng();
-    console.log("current marker pos", marker_lat, marker_lon)
-        // call api
+
+    // call api
 
     // let location = `${marker_lat}, ${marker_lon}`
     let lat = `${marker_lat}`
@@ -132,8 +127,8 @@ function newSpot() {
     let parallel = $('input:checkbox[id="parallel"]').is(":checked")
     let etc = $('#etc').val();
     var latlng = new kakao.maps.LatLng(marker_lat, marker_lon)
-    console.log(lat, lon)
-    console.log(latlng)
+
+
 
     if (pullUp == false & parallel == false) {
         alert('기구를 선택하세요');
@@ -141,10 +136,10 @@ function newSpot() {
     }
     // 문제2)
     // 좌표를 행정동 주소로 바꿔주는 함수인데, 이게 끝나고 ajax에 해당 값을 넣어서 요청하려함.
-    console.log('searchAddr start')
-        // searchAddrFromCoords(latlng, getDetailAddrInfo)
+
+    // searchAddrFromCoords(latlng, getDetailAddrInfo)
     searchDetailAddrFromCoords(latlng, getDetailAddrInfo)
-    console.log('searchAddr finish')
+
 
 
 
@@ -166,12 +161,11 @@ function searchDetailAddrFromCoords(coords, callback) {
 
 // 주소정보를 리턴하는 함수입니다
 function getDetailAddrInfo(result, status) {
-    console.log('get Addr info inside')
+
     if (status === kakao.maps.services.Status.OK) {
         var dongAddr = ''
         var streetAddr = ''
-        console.log('kakao.maps ok')
-        console.log(result[0])
+
 
         var dong = result[0].address.address_name
         var street = ''
@@ -195,7 +189,7 @@ function getDetailAddrInfo(result, status) {
 
 // ajax post method
 function post_newspot(dong, street) {
-    console.log('ajax will start')
+
     let lat = `${uni_marker.getPosition().getLat()}`
     let lon = `${uni_marker.getPosition().getLng()}`
     let pullUp = $('input:checkbox[id="pullUp"]').is(":checked")
@@ -222,7 +216,7 @@ function post_newspot(dong, street) {
         // },
 
     }).done(function(response) {
-        console.log('done!')
+
         alert(response['msg'])
         window.location.assign('/map');
     }).fail(function(response) {
@@ -232,7 +226,7 @@ function post_newspot(dong, street) {
 }
 
 function listing(map) {
-    console.log('listing start')
+
     $.ajax({
         tytpe: "GET",
         url: "https://trainyourself.co.kr/api/spots",
@@ -250,7 +244,7 @@ function listing(map) {
                         title += '평행봉'
                     }
                     tmp += title + '<br>'
-                    $('#spots_list').prepend(tmp)
+                        // $('#spots_list').prepend(tmp)
                     positions.push({
                         title: `${title}`,
                         latlng: new kakao.maps.LatLng(spots[i]['lat'], spots[i]['lon'])
@@ -261,12 +255,12 @@ function listing(map) {
             }
         }
     })
-    console.log('listing finish')
+
 }
 
 function marker_display(map) {
     // marker set을 표시하는 코드
-    console.log('marker_display start')
+
     for (var i = 0; i < positions.length; i++) {
 
         // 마커 이미지의 이미지 크기 입니다
@@ -294,11 +288,12 @@ function marker_display(map) {
 
         // 인포윈도우를 마커위에 표시합니다 
         infowindow.open(map, marker);
-        console.log(`${i}번째 marker display`)
+
         marker.setMap(map);
     }
-    console.log('marker_display finished')
 
+    var locPosition = currentPosition
+    map.setCenter(locPosition)
 
 
     // 마커가 지도 위에 표시되도록 설정합니다
