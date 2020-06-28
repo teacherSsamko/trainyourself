@@ -15,7 +15,7 @@ $(document).ready(function() {
                 lon = position.coords.longitude; // 경도
 
             var locPosition = new kakao.maps.LatLng(lat, lon), // 마커가 표시될 위치를 geolocation으로 얻어온 좌표로 생성합니다
-                message = '<div style="padding:5px;">위치등록 <br></div>'; // 인포윈도우에 표시될 내용입니다
+                message = '<div style="padding:5px;">기구가 있는 위치로 <br>이동시켜주세요 :) <br></div>'; // 인포윈도우에 표시될 내용입니다
 
             currentPosition = locPosition;
             // 마커와 인포윈도우를 표시합니다
@@ -96,6 +96,10 @@ function displayMarker(locPosition, message, map) {
     // 지도 중심좌표를 접속위치로 변경합니다
     map.setCenter(locPosition);
     uni_marker = marker;
+
+    kakao.maps.event.addListener(marker, 'dragstart', function(mouseEvent) {
+        infowindow.close()
+    });
 }
 
 
@@ -168,12 +172,12 @@ function getDetailAddrInfo(result, status) {
         var streetAddr = ''
         console.log('kakao.maps ok')
         console.log(result[0])
-            
+
         var dong = result[0].address.address_name
         var street = ''
         try {
             street = result[0].road_address.address_name
-        }finally{
+        } finally {
             if (dong != null && street != '') {
                 post_newspot(dong, street)
             } else if (dong != null) {
