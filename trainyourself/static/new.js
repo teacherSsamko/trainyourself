@@ -95,6 +95,11 @@ function displayMarker(locPosition, message, map) {
     kakao.maps.event.addListener(marker, 'dragstart', function(mouseEvent) {
         infowindow.close()
     });
+    kakao.maps.event.addListener(map, 'click', function(mouseEvent) {
+        var latlng = mouseEvent.latLng;
+        infowindow.close()
+        marker.setPosition(latlng);
+    })
 }
 
 
