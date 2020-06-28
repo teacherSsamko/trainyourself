@@ -134,6 +134,8 @@ function listing(map) {
         $('.equip').click(function() {
             var index = $(this).index('.equip')
             panTo(index)
+            overlay_list[index].setMap(map)
+            // overylay 여기
         })
     })
 }
@@ -299,4 +301,7 @@ function addClickEventOnMarkers(){
     
     }
 }
+
+// 버튼 클릭으로 list item filtering
+
 
