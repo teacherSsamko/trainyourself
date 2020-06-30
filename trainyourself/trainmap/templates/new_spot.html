@@ -1,7 +1,7 @@
 {% extends 'base.html' %} {% block title %} 위치찾기 | {{ block.super }} {% endblock title %} {% block nav-new %}active{% endblock nav-new %} {% load static %} {% block header %}
 <link rel="stylesheet" href="{% static 'css/base.css' %}">
 <link rel="stylesheet" href="{% static 'css/new.css' %}"> {% endblock header %} {% block contents %}
-<div id="map" style="width:100%;height:400px;"></div>
+<div id="map" style="height:400px;"></div>
 <div id="register">
     <input type="checkbox" name="pullUp" id="pullUp" class="form-class">
     <label for="pullUp">철봉</label>
